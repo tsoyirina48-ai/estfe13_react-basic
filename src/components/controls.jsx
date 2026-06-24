@@ -6,7 +6,9 @@ function Controls({ onChangeMode }) {
             onChangeMode("create");
         }}
         >Create</button>
+
         </div>
+        
     );
 }
 export default Controls;
