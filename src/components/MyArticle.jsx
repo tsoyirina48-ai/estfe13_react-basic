@@ -3,10 +3,11 @@ function MyArticle({ title, desc, onChangeMode, onDelete }) {
   return (
     <section>
       <article>
-        <h2>HTML</h2>
-        <p>Hypertext Markup Language</p>
+        <h2>{title}</h2>
+        <p>{desc}</p>
       </article>
       <button onClick={() => {
+        console.log("수정 클릭")
       onChangeMode();
     }}
        >

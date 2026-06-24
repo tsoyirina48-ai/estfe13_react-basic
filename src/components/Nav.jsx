@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const Nav = memo(function Nav({ data }) {
+const Nav = memo(function Nav({ data, onChangeMode }) {
     console.log("Nav render");
     const lists = data.map(d => (
         <li key={d.id}>

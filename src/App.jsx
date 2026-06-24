@@ -34,6 +34,8 @@ function App() {
   let _title = null;
   let _desc = null;
   let _article = null;
+  const selectedArticle = content.find((item) => String(item.id) === String(id)
+);
 
   const handleDelete = () => {
     if(window.confirm("정말 삭제할까요")) {
@@ -44,11 +46,15 @@ function App() {
     }
   };
 
-  if (mode === 'welcome') {
+  if (mode === "welcome") {
     _title = welcome.title;
     _desc = welcome.desc;
-    _article = <MyArticle title={_title} desc={_desc} />
-
+    _article = ( 
+     <article>
+      <h2>{_title}</h2>
+      <p>{_desc}</p>
+     </article>
+    );
   } else if(mode === "read") {
         if (selectedArticle) {
       _title = selectedArticle.title;
@@ -108,9 +114,9 @@ function App() {
       />
   );
   }
-  const handleChangeMode = useCallback(_id => {
+  const handleChangeMode = useCallback((_id) => {
     setMode("read");
-    setId("_id");
+    setId(_id);
 
   }, []);
 
