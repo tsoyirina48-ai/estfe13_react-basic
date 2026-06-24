@@ -7,7 +7,7 @@ function Nav({ data, onChangeMode }) {
             onClick={e => {
                 //console.log(e.target.dataset.id);
                 e.preventDefault();
-                onChangeMode(Number(e.target));
+                onChangeMode(Number(e.target.dataset.id));
             }} 
                 >
                 {d.title}

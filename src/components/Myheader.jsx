@@ -12,4 +12,4 @@ function MyHeader({ title, desc, onChangeMode }){
     </header> 
   );
 }
-export default Myheader;
+export default MyHeader;
