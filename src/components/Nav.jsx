@@ -1,15 +1,18 @@
 import { memo } from "react";
 
-const Nav = memo(function Nav({ data, onChangeMode }) {
+const Nav = memo(function Nav({ id, data, onChangeMode }) {
     console.log("Nav render");
     const lists = data.map(d => (
-        <li key={d.id}>
+        <li key={d.id} className="nav-item">
+    
             <a href={`/${d.id}`}
-            data-id={d.id}
+                className={`nav-link ${d.id === id ? "active" : ""}`}
+
             onClick={e => {
                 //console.log(e.target.dataset.id);
+
                 e.preventDefault();
-                onChangeMode(e.target.dataset.id);
+                onChangeMode(d.id);
             }} 
                 >
                 {d.title}
@@ -20,9 +23,7 @@ const Nav = memo(function Nav({ data, onChangeMode }) {
     //list에 출력할 코드 생성
     return (
         <nav>
-            <ul>
-              {lists}
-            </ul>
+            <ul className="nav flex-column nav-pills">{lists}</ul>
         </nav>
     );
 });

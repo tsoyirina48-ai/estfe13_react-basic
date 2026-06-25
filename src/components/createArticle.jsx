@@ -1,6 +1,6 @@
 import ArticleForm from "./ArticleForm";
 
-function CreateArticle({ onSubmit }){
+function CreateArticle({ onSubmit }) {
     console.log("CreateArticle render");
     return (
         <>

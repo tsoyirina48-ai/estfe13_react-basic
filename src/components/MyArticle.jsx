@@ -1,23 +1,29 @@
-function MyArticle({ title, desc, difficulty, onChangeMode, onDelete }) {
-    console.log("MyArticle");
+function MyArticle({ title, desc, level, onChangeMode, onDelete }) {
+    console.log("MyArticle render");
   return (
-    <section>
-      <article>
-        <h2>{title}</h2>
-        <p>{desc}</p>
-        <p>난이도: {difficulty}</p>
+    <section className="card mt-3 mb-3">
+      <article className="card-body">
+        <h2 className="card-title">{title}</h2>
+        <p className="card-text">{desc}</p>
+        {level && <p>난이도: {level}</p>}
       </article>
-      <button onClick={() => {
-        console.log("수정 클릭")
-      onChangeMode();
-    }}
-       >
+
+      <div className="d-flex justify-content-end p-3 gap-1">
+        {onChangeMode && (
+      
+      <button className="btn btn-secondary btn-sm" onClick={onChangeMode}> 
         수정</button>
-      <button onClick={() => {
-      onDelete();
-    }}
-       >
-      삭제</button>
+        )}
+
+
+
+        {onDelete && (
+        <button className="btn btn-danger btn-sm"
+        onClick={onDelete}>
+          삭제</button>
+        )}
+  
+      </div>
     </section>
   );
 }

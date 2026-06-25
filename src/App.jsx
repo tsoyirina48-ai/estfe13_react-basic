@@ -1,7 +1,7 @@
 import "./App.css";
 import MyHeader from "./components/Myheader";
 import Nav from "./components/Nav";
-import MyArticle from "./components/MyArticle"
+import MyArticle from "./components/MyArticle";
 import { useState, useCallback, useMemo } from "react";
 import Controls from "./components/controls";
 import CreateArticle from "./components/createArticle";
@@ -10,132 +10,111 @@ import { v4 as uuidv4 } from "uuid";
 
 function App() {
   console.log("App render");
-    const [id, setId] = useState(1);
+    const [id, setId] = useState("1");
     const [mode,setMode] = useState("welcome");
-    const [subject, setSubject] = useState({
+    const [subject] = useState({
     title: "프론트앤드 개발자",
     desc:"기본 언어인 html, css, javascript부터 학습합니다.",
   });
   const [content, setContent] = useState([
     {id: "1", title: 'UI/UX 개발', desc: '사용자 경험을 고려한 직관적이고 반응성 높은 화면 구현',
-      difficulty: "초급"
+      level: 1,
     },
     {
       id: "2", title: '재사용이 가능한 UI 개발', desc: '컴포넌트 기반으로 동일한 UI를 효율적으로 재사용 가능',
-      difficulty: "중급"
+      level: 2,
     },
     {
       id: "3", title: '애니메이션 구현', desc: '상태 변화에 따른 자연스럽고 동적인 화면 효과 구현',
-      difficulty: "고급"
-    }
+      level: 3,
+    },
   ]);
-   const [maxId, setMaxId] = useState(3);
+   //const [maxId, setMaxId] = useState(3);
 
   const welcome = {title:'welcome', desc:'Welcome to react' };
 
-  let _title = null;
-  let _desc = null;
-  let _article = null;
-  const selectedArticle = content.find((item) => String(item.id) === String(id)
+  const selectedArticle = useMemo(() => content.find(item => item.id === id), [content, id]
 );
 
   const handleDelete = () => {
     if(window.confirm("정말 삭제할까요")) {
       setContent(prev => prev.filter(item=> item.id !== id));
-      setMode("welcome");
-    } else {
-      setMode("welcome");
     }
-  };
-
-  if (mode === "welcome") {
-    _title = welcome.title;
-    _desc = welcome.desc;
-    _article = ( 
-     <article>
-      <h2>{_title}</h2>
-      <p>{_desc}</p>
-     </article>
-    );
-  } else if (mode === "read") {
-        if (selectedArticle) {
-      _title = selectedArticle.title;
-      _desc = selectedArticle.desc;
-    
-   _article = (
-     <MyArticle 
-     title={_title} 
-     desc={_desc}
-
-     difficulty={selectedArticle.difficulty}
-      onChangeMode={() => {
-        setMode("update");
-     }} 
-     onDelete={handleDelete}
-     /> 
-   );
-  }
-  } else if(mode === "create") {
-    _article = (
-    <CreateArticle 
-    onSubmit={(_title, _desc, _difficulty) => {
+      setMode("welcome");
+    };
+    const handleSubmitCreate = (_title, _desc, _level) => {
       const newId = uuidv4();
-      let _contents = content.concat({ id: newId, title: _title, desc: _desc, difficulty: _difficulty });
+
+      let _contents = content.concat({
+        id: newId,
+        title: _title,
+        desc: _desc,
+        level: _level,
+      });
       setContent(_contents);
-      setMaxId(newId);
       setId(newId);
       setMode("read");
-    }}
-      />
-  );
-   
-
-  } else if(mode === "update") {
-
-
-    _article = (
-    <UpdateArticle 
-    title= {selectedArticle.title}
-    desc= {selectedArticle.desc}
-    difficulty={selectedArticle.difficulty}
-    onSubmit={(_title, _desc, _difficulty) => {
-      
-      setContent(prev=> 
-        prev.map((p) => String(p.id) === String(id) ? 
-                {
-                  ...p,
-                  title: _title,
-                  desc: _desc,
-                  difficulty: _difficulty,
-                }
-              : p,
-              ),
-            );
-      
+    };
+    const handleSubmitUpdate = (_title, _desc, _level) => {
+      setContent(prev =>
+        prev.map(p =>
+          p.id === id? {
+            ...p,
+            title: _title,
+            desc: _desc,
+            level: _level,
+          }
+          : p,
+        ),
+      );
       setMode("read");
+    };
+  const renderArticle = () => {
+    switch (mode) {
+      case "read":
+        return (
+          <MyArticle 
+          title={selectedArticle?.title ?? welcome.title} 
+          desc={selectedArticle?.desc ?? welcome.desc}
+          level={selectedArticle?.level ?? welcome.level}
+          onChangeMode={() => {
+            setMode("update");
+          }}
+          onDelete={handleDelete}
+           />
+        );
+	
+ case "create":
+	 return <CreateArticle onSubmit={handleSubmitCreate} />;
 
-    }}
-      />
-  );
-  }
-  const handleChangeMode = useCallback((_id) => {
+   case "update":
+    return (
+    <UpdateArticle
+    title= {selectedArticle?.title ?? ""}
+    desc= {selectedArticle?.desc ?? ""}
+    level={selectedArticle?.level ?? ""}
+    onSubmit={handleSubmitUpdate}
+    />
+      );
+
+      default:
+      return <MyArticle title={welcome.title} desc={welcome.desc} />
+    }
+  };
+const handleChangeMode = useCallback(_id => {
+  console.log(_id);
     setMode("read");
     setId(_id);
 
   }, []);
-
- 
-
   return (
     <>
-    <MyHeader title={subject.title} desc={subject.desc} onChangeMode={() => {
-       setMode("Welcome");
+ <MyHeader title={subject.title} desc={subject.desc} onChangeMode={() => {
+       setMode("welcome");
     
     }}
     />
-
-     <Nav data={content} onChangeMode={handleChangeMode} />
-    {/*<header>
+{/*<header>
     <h1
     className="logo"
     onClick={() => {
@@ -146,13 +125,29 @@ function App() {
       </h1>
     </header>
     */}
+
+<Nav data={content} id={id} onChangeMode={handleChangeMode} />
+    
   
-    {_article}
+    {renderArticle()}
     <hr />
     <Controls onChangeMode={() => {
       setMode("create");
-    }} />
+    }} 
+    />
     </>
   );
 }
 export default App;
+
+
+
+    
+  
+
+
+
+
+
+
+    
